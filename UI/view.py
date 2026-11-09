@@ -12,7 +12,7 @@ class View:
         # Page
         self.page = page
         self.page.title = "Lab07"
-        self.page.horizontal_alignment = "center"
+        self.page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
         self.page.theme_mode = ft.ThemeMode.DARK
 
         # Alert
@@ -20,6 +20,14 @@ class View:
 
         # Controller
         self.controller = None
+
+        # Elementi UI
+        self.txt_titolo = None
+        self.dd_biblioteca = None
+        self.dd_genere = None
+        self.btn_mostra_libri = None
+        self.lista_libri = None
+        self.toggle_cambia_tema = None
 
     def show_alert(self, messaggio):
         self.alert.show_alert(messaggio)
@@ -36,10 +44,20 @@ class View:
         self.txt_titolo = ft.Text(value="Biblioteche di Torino", size=38, weight=ft.FontWeight.BOLD)
 
         # --- Sezione 2: Filtraggio ---
-        # TODO
+        self.dd_biblioteca = ft.Dropdown(
+            label="Biblioteca",
+            width=380,
+            on_select=self.controller.seleziona_biblioteca
+        )
+        self.dd_genere = ft.Dropdown(
+            label="Genere",
+            width=250,
+            on_select=self.controller.seleziona_genere
+        )
 
-        # Sezione 3: Libri
-        # TODO
+        # --- Sezione 3: Lista Libri ---
+        self.btn_mostra_libri = ft.Button("Mostra Libri", on_click=self.controller.mostra_libri)
+        self.lista_libri = ft.ListView(expand=True, spacing=5, padding=10, auto_scroll=True)
 
         # --- Toggle Tema ---
         self.toggle_cambia_tema = ft.Switch(label="Tema scuro", value=True, on_change=self.cambia_tema)
@@ -53,11 +71,23 @@ class View:
             ft.Divider(),
 
             # Sezione 2: Filtraggio
-            # TODO
+            ft.Text("Seleziona Filtri", size=20),
+            ft.Row(
+                controls=[self.dd_biblioteca, self.dd_genere],
+                alignment=ft.MainAxisAlignment.CENTER
+            ),
+            ft.Divider(),
 
             # Sezione 3: Libri
-            # TODO
+            ft.Row(
+                controls=[ft.Text("Lista Libri", size=20), self.btn_mostra_libri],
+                alignment=ft.MainAxisAlignment.CENTER
+            ),
+            self.lista_libri
         )
+
+        # Popolamento iniziale dei menu a tendina
+        self.controller.popola_dropdown()
 
         self.page.scroll = "adaptive"
         self.page.update()
